@@ -1,20 +1,26 @@
-from flask import Flask, request, jsonify
-import os
-from flask_cors import CORS
+from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
-CORS(app) 
 
-data = []
+# In-memory storage
+messages = []
 
-# GET API 
-@app.route('/user', methods=['GET'])
-def get_user():
-    return jsonify(data)
+@app.route('/')
+def home():
+    return render_template('index.html')
 
-# POST API 
-@app.route('/user', methods=['POST'])
-def add_user():
-    new_item = request.get_json()  
-    data.append(new_item)  
-    return jsonify(new_item), 201  
+@app.route('/api/messages', methods=['GET'])
+def get_messages():
+    return jsonify(messages)
+
+@app.route('/api/messages', methods=['POST'])
+def post_message():
+    data = request.get_json()
+    message = data.get('message', '')
+    if message:
+        messages.append(message)
+        return jsonify({'status': 'success', 'message': message}), 201
+    return jsonify({'status': 'fail', 'error': 'No message provided'}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True)
