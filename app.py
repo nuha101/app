@@ -18,6 +18,3 @@ def add_user():
     new_item = request.get_json()  
     data.append(new_item)  
     return jsonify(new_item), 201  
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8000)))
